@@ -21,9 +21,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Repository Pattern: the concrete EF Core repository is registered against its interface.
 // Scoped lifetime matches the DbContext's lifetime (one instance per HTTP request).
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
 
 // Service layer: business logic sits between controllers and repositories.
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 
 // Swagger/OpenAPI - lets students explore and try the REST API from a browser at /swagger.
 builder.Services.AddEndpointsApiExplorer();
@@ -31,9 +33,11 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Student Management API",
+        Title = "Movie Theater Management API",
         Version = "v1",
-        Description = "A simple educational REST API for managing student records."
+        Description =
+            "REST API for managing movie theater showtimes. " +
+            "The original student endpoints are retained as a reference module."
     });
 });
 
@@ -56,7 +60,9 @@ else
 {
     // Swagger UI is only exposed in Development for security/simplicity.
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student Management API v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "Movie Theater Management API v1"));
 }
 
 app.UseHttpsRedirection();
@@ -70,7 +76,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Attribute-routed API controllers (routes defined via [Route] on StudentsApiController).
+// Attribute-routed Student and Showtime API controllers.
 app.MapControllers();
 
 app.Run();
