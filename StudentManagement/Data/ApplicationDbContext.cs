@@ -3,77 +3,118 @@ using StudentManagement.Models;
 
 namespace StudentManagement.Data
 {
-    /// <summary>
-    /// The EF Core database context. Represents a session with the database and
-    /// exposes DbSet properties that map to tables.
-    /// Registered as Scoped in DI (the default lifetime for AddDbContext) - one instance per HTTP request.
-    /// </summary>
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<Student> Students { get; set; } = null!;
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Student>(entity =>
+      /// <summary>
+      /// The EF Core database context. Represents a session with the database and
+      /// exposes DbSet properties that map to tables.
+      /// Registered as Scoped in DI (the default lifetime for AddDbContext) - one instance per HTTP request.
+      /// </summary>
+      public class ApplicationDbContext : DbContext
+      {
+            public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+                : base(options)
             {
-                entity.ToTable("Students");
+            }
 
-                entity.HasKey(s => s.StudentId);
+            public DbSet<Student> Students { get; set; } = null!;
+            public DbSet<Showtime> Showtimes { get; set; } = null!;
 
-                entity.Property(s => s.StudentNumber)
-                      .IsRequired()
-                      .HasMaxLength(20);
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                  base.OnModelCreating(modelBuilder);
 
-                entity.Property(s => s.FirstName)
-                      .IsRequired()
-                      .HasMaxLength(100);
+                  modelBuilder.Entity<Student>(entity =>
+                  {
+                        entity.ToTable("Students");
 
-                entity.Property(s => s.LastName)
-                      .IsRequired()
-                      .HasMaxLength(100);
+                        entity.HasKey(s => s.StudentId);
 
-                entity.Property(s => s.Email)
-                      .IsRequired()
-                      .HasMaxLength(150);
+                        entity.Property(s => s.StudentNumber)
+                        .IsRequired()
+                        .HasMaxLength(20);
 
-                entity.Property(s => s.Course)
-                      .IsRequired()
-                      .HasMaxLength(100);
+                        entity.Property(s => s.FirstName)
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                entity.Property(s => s.YearLevel)
-                      .IsRequired();
+                        entity.Property(s => s.LastName)
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                entity.Property(s => s.DateCreated)
-                      .IsRequired()
-                      .HasDefaultValueSql("GETDATE()");
+                        entity.Property(s => s.Email)
+                        .IsRequired()
+                        .HasMaxLength(150);
 
-                entity.Property(s => s.IsActive)
-                      .IsRequired()
-                      .HasDefaultValue(true);
+                        entity.Property(s => s.Course)
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-                // Unique constraints enforced at the database level, mirroring the SQL script.
-                entity.HasIndex(s => s.StudentNumber)
-                      .IsUnique()
-                      .HasDatabaseName("UQ_Students_StudentNumber");
+                        entity.Property(s => s.YearLevel)
+                        .IsRequired();
 
-                entity.HasIndex(s => s.Email)
-                      .IsUnique()
-                      .HasDatabaseName("UQ_Students_Email");
+                        entity.Property(s => s.DateCreated)
+                        .IsRequired()
+                        .HasDefaultValueSql("GETDATE()");
 
-                // Non-unique index to speed up name-based searches/sorting, a common list-page pattern.
-                entity.HasIndex(s => new { s.LastName, s.FirstName })
-                      .HasDatabaseName("IX_Students_LastName_FirstName");
+                        entity.Property(s => s.IsActive)
+                        .IsRequired()
+                        .HasDefaultValue(true);
 
-                entity.HasIndex(s => s.Course)
-                      .HasDatabaseName("IX_Students_Course");
-            });
-        }
-    }
+                        // Unique constraints enforced at the database level, mirroring the SQL script.
+                        entity.HasIndex(s => s.StudentNumber)
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Students_StudentNumber");
+
+                        entity.HasIndex(s => s.Email)
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Students_Email");
+
+                        // Non-unique index to speed up name-based searches/sorting, a common list-page pattern.
+                        entity.HasIndex(s => new { s.LastName, s.FirstName })
+                        .HasDatabaseName("IX_Students_LastName_FirstName");
+
+                        entity.HasIndex(s => s.Course)
+                        .HasDatabaseName("IX_Students_Course");
+                  });
+
+                  modelBuilder.Entity<Showtime>(entity =>
+                  {
+                        entity.ToTable("Showtimes");
+
+                        entity.HasKey(s => s.ShowtimeId);
+
+                        entity.Property(s => s.MovieCode)
+                              .IsRequired()
+                              .HasMaxLength(20);
+
+                        entity.Property(s => s.Title)
+                              .IsRequired()
+                              .HasMaxLength(150);
+
+                        entity.Property(s => s.Genre)
+                              .IsRequired()
+                              .HasMaxLength(50);
+
+                        entity.Property(s => s.ShowDateTime)
+                              .IsRequired();
+
+                        entity.Property(s => s.TicketPrice)
+                              .IsRequired()
+                              .HasColumnType("decimal(10,2)");
+
+                        entity.Property(s => s.DateCreated)
+                              .IsRequired()
+                              .HasDefaultValueSql("GETDATE()");
+
+                        entity.HasIndex(s => s.MovieCode)
+                              .IsUnique()
+                              .HasDatabaseName("UQ_Showtimes_MovieCode");
+
+                        entity.HasIndex(s => s.ShowDateTime)
+                              .HasDatabaseName("IX_Showtimes_ShowDateTime");
+
+                        entity.HasIndex(s => s.Genre)
+                              .HasDatabaseName("IX_Showtimes_Genre");
+                  });
+            }
+      }
 }
