@@ -105,9 +105,9 @@ namespace StudentManagement.Data
                               .IsRequired()
                               .HasDefaultValueSql("GETDATE()");
 
-                        entity.HasIndex(s => s.MovieCode)
+                        entity.HasIndex(s => new { s.MovieCode, s.ShowDateTime })
                               .IsUnique()
-                              .HasDatabaseName("UQ_Showtimes_MovieCode");
+                              .HasDatabaseName("UQ_Showtimes_MovieCode_ShowDateTime");
 
                         entity.HasIndex(s => s.ShowDateTime)
                               .HasDatabaseName("IX_Showtimes_ShowDateTime");
