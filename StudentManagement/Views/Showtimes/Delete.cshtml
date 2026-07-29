@@ -1,0 +1,56 @@
+@model ShowtimeDto
+
+@{
+    ViewData["Title"] = "Delete Showtime";
+}
+
+<h1 class="text-danger">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    Delete Showtime
+</h1>
+
+<div class="alert alert-warning">
+    Are you sure you want to permanently delete this showtime?
+    This action cannot be undone.
+</div>
+
+<div class="card shadow-sm" style="max-width: 700px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Movie Code</dt>
+            <dd class="col-sm-8">@Model.MovieCode</dd>
+
+            <dt class="col-sm-4">Movie Title</dt>
+            <dd class="col-sm-8">@Model.Title</dd>
+
+            <dt class="col-sm-4">Genre</dt>
+            <dd class="col-sm-8">@Model.Genre</dd>
+
+            <dt class="col-sm-4">Show Date and Time</dt>
+            <dd class="col-sm-8">
+                @Model.ShowDateTime.ToString("f")
+            </dd>
+
+            <dt class="col-sm-4">Ticket Price</dt>
+            <dd class="col-sm-8">
+                @Model.TicketPrice.ToString("C")
+            </dd>
+        </dl>
+    </div>
+
+    <div class="card-footer">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="ShowtimeId" />
+
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i>
+                Confirm Delete
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>

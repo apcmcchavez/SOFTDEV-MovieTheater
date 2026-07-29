@@ -1,0 +1,59 @@
+@model ShowtimeDto
+
+@{
+    ViewData["Title"] = "Showtime Details";
+}
+
+<h1>
+    <i class="bi bi-film"></i>
+    Showtime Details
+</h1>
+
+<div class="card shadow-sm" style="max-width: 700px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Movie Code</dt>
+            <dd class="col-sm-8">@Model.MovieCode</dd>
+
+            <dt class="col-sm-4">Movie Title</dt>
+            <dd class="col-sm-8">@Model.Title</dd>
+
+            <dt class="col-sm-4">Genre</dt>
+            <dd class="col-sm-8">@Model.Genre</dd>
+
+            <dt class="col-sm-4">Show Date and Time</dt>
+            <dd class="col-sm-8">
+                @Model.ShowDateTime.ToString("f")
+            </dd>
+
+            <dt class="col-sm-4">Ticket Price</dt>
+            <dd class="col-sm-8">
+                @Model.TicketPrice.ToString("C")
+            </dd>
+
+            <dt class="col-sm-4">Date Created</dt>
+            <dd class="col-sm-8">
+                @Model.DateCreated.ToString("f")
+            </dd>
+
+            <dt class="col-sm-4">Last Updated</dt>
+            <dd class="col-sm-8">
+                @(Model.DateUpdated.HasValue
+                    ? Model.DateUpdated.Value.ToString("f")
+                    : "Never")
+            </dd>
+        </dl>
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.ShowtimeId" class="btn btn-primary">
+            <i class="bi bi-pencil"></i>
+            Edit
+        </a>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Back to Showtimes
+        </a>
+    </div>
+</div>

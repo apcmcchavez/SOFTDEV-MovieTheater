@@ -1,11 +1,26 @@
 @{
     ViewData["Title"] = "Dashboard";
+
+    var nextShowtimes =
+        (IEnumerable<StudentManagement.ViewModels.ShowtimeDto>)
+        ViewBag.NextShowtimes;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
-    <a asp-controller="Students" asp-action="Create" class="btn btn-success">
-        <i class="bi bi-plus-circle"></i> Add New Student
+    <div>
+        <h1>
+            <i class="bi bi-speedometer2"></i>
+            Movie Theater Dashboard
+        </h1>
+
+        <p class="text-muted mb-0">
+            Overview of movie schedules and upcoming screenings.
+        </p>
+    </div>
+
+    <a asp-controller="Showtimes" asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i>
+        Add New Showtime
     </a>
 </div>
 
@@ -13,75 +28,146 @@
     <div class="col-md-4">
         <div class="card text-white bg-primary shadow-sm">
             <div class="card-body">
-                <h6 class="card-title text-uppercase">Total Students</h6>
-                <p class="display-5 mb-0">@ViewBag.TotalStudents</p>
+                <h6 class="card-title text-uppercase">
+                    Total Showtimes
+                </h6>
+
+                <p class="display-5 mb-0">
+                    @ViewBag.TotalShowtimes
+                </p>
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="card text-white bg-success shadow-sm">
             <div class="card-body">
-                <h6 class="card-title text-uppercase">Courses Offered</h6>
-                <p class="display-5 mb-0">@ViewBag.TotalCourses</p>
+                <h6 class="card-title text-uppercase">
+                    Upcoming Screenings
+                </h6>
+
+                <p class="display-5 mb-0">
+                    @ViewBag.UpcomingShowtimes
+                </p>
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <div class="card text-white bg-info shadow-sm">
             <div class="card-body">
-                <h6 class="card-title text-uppercase">Year Levels</h6>
-                <p class="display-5 mb-0">@(((IDictionary<int,int>)ViewBag.YearLevelBreakdown).Count)</p>
+                <h6 class="card-title text-uppercase">
+                    Movie Genres
+                </h6>
+
+                <p class="display-5 mb-0">
+                    @ViewBag.TotalGenres
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row g-3">
-    <div class="col-md-5">
+    <div class="col-lg-8">
         <div class="card shadow-sm">
-            <div class="card-header"><i class="bi bi-bar-chart-fill"></i> Students per Year Level</div>
-            <ul class="list-group list-group-flush">
-                @foreach (var kvp in (IDictionary<int, int>)ViewBag.YearLevelBreakdown)
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Year @kvp.Key
-                        <span class="badge bg-primary rounded-pill">@kvp.Value</span>
-                    </li>
-                }
-                @if (((IDictionary<int, int>)ViewBag.YearLevelBreakdown).Count == 0)
-                {
-                    <li class="list-group-item text-muted">No data yet.</li>
-                }
-            </ul>
+            <div class="card-header">
+                <i class="bi bi-calendar-event-fill"></i>
+                Next Scheduled Showtimes
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Movie</th>
+                            <th>Genre</th>
+                            <th>Schedule</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var showtime in nextShowtimes)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@showtime.Title</strong>
+                                    <div class="small text-muted">
+                                        @showtime.MovieCode
+                                    </div>
+                                </td>
+
+                                <td>@showtime.Genre</td>
+
+                                <td>
+                                    @showtime.ShowDateTime.ToString(
+                                        "MMM d, yyyy h:mm tt")
+                                </td>
+
+                                <td>
+                                    @showtime.TicketPrice.ToString("C")
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!nextShowtimes.Any())
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No upcoming showtimes yet.
+                                    Click "Add New Showtime" to get started.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-7">
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <i class="bi bi-camera-reels"></i>
+                Showtime Module
+            </div>
+
+            <div class="card-body">
+                <p>
+                    Create, retrieve, update, and delete movie
+                    screening schedules.
+                </p>
+
+                <a asp-controller="Showtimes" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-calendar-event"></i>
+                    Manage Showtimes
+                </a>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
-            <div class="card-header"><i class="bi bi-clock-history"></i> Recently Added Students</div>
-            <table class="table table-striped mb-0">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Course</th>
-                        <th>Date Added</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var s in (IEnumerable<StudentManagement.ViewModels.StudentDto>)ViewBag.RecentStudents)
-                    {
-                        <tr>
-                            <td>@s.FirstName @s.LastName</td>
-                            <td>@s.Course</td>
-                            <td>@s.DateCreated.ToString("g")</td>
-                        </tr>
-                    }
-                    @if (!((IEnumerable<StudentManagement.ViewModels.StudentDto>)ViewBag.RecentStudents).Any())
-                    {
-                        <tr><td colspan="3" class="text-muted">No students yet - click "Add New Student" to get started.</td></tr>
-                    }
-                </tbody>
-            </table>
+            <div class="card-header">
+                <i class="bi bi-archive-fill"></i>
+                Original Student Module
+            </div>
+
+            <div class="card-body">
+                <p class="mb-2">
+                    Original student records:
+                    <strong>@ViewBag.TotalStudents</strong>
+                </p>
+
+                <p class="text-muted small">
+                    Retained as the original Laboratory Exercise #1
+                    reference implementation.
+                </p>
+
+                <a asp-controller="Students" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-people"></i>
+                    Open Original Module
+                </a>
+            </div>
         </div>
     </div>
 </div>

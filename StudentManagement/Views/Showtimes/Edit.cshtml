@@ -1,0 +1,97 @@
+@model ShowtimeViewModel
+
+@{
+    ViewData["Title"] = "Edit Showtime";
+}
+
+<h1>
+    <i class="bi bi-pencil-square"></i>
+    Edit Showtime
+</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="ShowtimeId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label asp-for="MovieCode" class="form-label"></label>
+
+                    <input asp-for="MovieCode" class="form-control" />
+
+                    <span asp-validation-for="MovieCode" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label"></label>
+
+                    <input asp-for="Title" class="form-control" />
+
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="Genre" class="form-label"></label>
+
+                    <input asp-for="Genre" class="form-control" />
+
+                    <span asp-validation-for="Genre" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ShowDateTime" class="form-label"></label>
+
+                    <input asp-for="ShowDateTime" type="datetime-local" class="form-control" />
+
+                    <span asp-validation-for="ShowDateTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label asp-for="TicketPrice" class="form-label"></label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+
+                        <input asp-for="TicketPrice" type="number" min="0.01" step="0.01" class="form-control" />
+                    </div>
+
+                    <span asp-validation-for="TicketPrice" class="text-danger"></span>
+                </div>
+            </div>
+
+            @if (Model.DateCreated.HasValue)
+            {
+                <p class="text-muted small">
+                    Created:
+                    @Model.DateCreated.Value.ToString("g")
+
+                    @if (Model.DateUpdated.HasValue)
+                    {
+                        <span>
+                            |
+                            Last updated:
+                            @Model.DateUpdated.Value.ToString("g")
+                        </span>
+                    }
+                </p>
+            }
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i>
+                Save Changes
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i>
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
